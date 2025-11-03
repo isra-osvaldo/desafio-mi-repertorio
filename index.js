@@ -19,14 +19,14 @@ app.get('/', (req, res) => {
 })
 
 
-// Obtener todas las canciones
+// GET: Obtener todas las canciones
 app.get('/canciones', (req, res) => {
     const canciones = JSON.parse(fs.readFileSync('./repertorio.json', 'utf-8'))
     res.json(canciones)
 })
 
 
-// Agregar una nueva canción
+// POST: Agregar una nueva canción
 app.post('/canciones', (req, res) => {
     const canciones = JSON.parse(fs.readFileSync('./repertorio.json', 'utf-8'))
 
@@ -41,12 +41,16 @@ app.post('/canciones', (req, res) => {
 })
 
 
-// Editar una canción
+// PUT: Editar una canción
 app.put('/canciones/:id', (req, res) => {
     const { id } = req.params
     const cancionEdit = req.body
     const canciones = JSON.parse(fs.readFileSync('./repertorio.json', 'utf-8'))
     const index = canciones.findIndex(cancion => cancion.id == id)
+
+    if (index === -1) {
+    return res.status(404).send('Canción no encontrada');
+  }
 
     canciones[index] = { ...canciones[index], ...cancionEdit }
 
@@ -54,7 +58,7 @@ app.put('/canciones/:id', (req, res) => {
     res.send('Canción editada con éxito')
 })
 
-// Eliminar una canción|
+// DELETE: Eliminar una canción
 app.delete('/canciones/:id', (req, res) => {
     const { id } = req.params
     const canciones = JSON.parse(fs.readFileSync('./repertorio.json', 'utf-8'))
